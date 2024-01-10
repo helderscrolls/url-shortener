@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      # Will ONLY build development stage from our dockerfile
+      target: development
+    env_file:
+        - ./env/.env.development
+    volumes:
+      - .:/usr/src/app
+    # Run in dev Mode: npm run start:dev
+    command: npm run start:dev
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports: 
+      - '5432:5432'
+    volumes:
+      - url-shortener:/var/lib/postgresql/data
+
+volumes:
+  url-shortener:
